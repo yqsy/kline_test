@@ -5,7 +5,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, \
     QGridLayout, QGroupBox, QPushButton, QVBoxLayout, QHBoxLayout, \
     QGridLayout, QWidget, QBoxLayout, QLabel, QLineEdit, QCheckBox, \
-    QTreeWidget
+    QTreeWidget, QComboBox, QStyleFactory
 
 
 class MainWindow(QMainWindow):
@@ -18,8 +18,10 @@ class MainWindow(QMainWindow):
         grid_layout = QGridLayout()
         grid_layout.addWidget(self.get_left_box(), 0, 0)
         grid_layout.addWidget(self.get_right_box(), 0, 1)
+        grid_layout.addWidget(self.get_style_combo_box(), 1, 1)
         widget.setLayout(grid_layout)
         self.setCentralWidget(widget)
+        self.change_style('Fusion')
 
     def get_left_box(self):
         box = QGroupBox('left')
@@ -48,6 +50,19 @@ class MainWindow(QMainWindow):
 
         box.setLayout(qbox_layout)
         return box
+
+    def get_style_combo_box(self):
+        combo_box = QComboBox()
+        combo_box.addItems(QStyleFactory.keys())
+        combo_box.activated[str].connect(self.change_style);
+        return combo_box
+
+    def change_style(self, style_name):
+        QApplication.setStyle(QStyleFactory.create(style_name))
+        self.change_palette()
+
+    def change_palette(self):
+        QApplication.setPalette(QApplication.style().standardPalette())
 
 
 if __name__ == '__main__':
