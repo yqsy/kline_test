@@ -10,19 +10,19 @@ from PyQt5.QtGui import QPainter, QPalette, QColor, QPen
 class PaintArea(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.draw_back()
+        self.__draw_back()
 
     def paintEvent(self, QPaintEvent):
-        self.draw_block()
+        self.__draw_block()
 
-    def draw_back(self):
+    def __draw_back(self):
         """初始化背景为黑色"""
         self.setAutoFillBackground(True)
         palette = QPalette()
         palette.setColor(QPalette.Window, QColor('#000000'))
         self.setPalette(palette)
 
-    def draw_block(self):
+    def __draw_block(self):
         """画背景方框"""
         margin_left = 80
         margin_right = 80
@@ -34,7 +34,7 @@ class PaintArea(QWidget):
         pen.setColor(QColor('#FF0000'))
         painter.setPen(pen)
 
-        # 左右两根竖线
+        # 左右两根垂直线
         left_line = QLine(QPoint(margin_left, self.height() - margin_top),
                           QPoint(margin_left, margin_bottom))
 
@@ -43,6 +43,11 @@ class PaintArea(QWidget):
 
         painter.drawLine(left_line)
         painter.drawLine(right_line)
+
+        # 水平线
+        xleft = margin_left
+        xright =  self.width() - margin_right
+
 
 
 class Window(QMainWindow):
