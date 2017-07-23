@@ -14,10 +14,12 @@ from hq_data import Kline
 from hq_data import HqData
 from exception import hook_exception_handle
 
+
 class PaintArea(QWidget):
     """
     背景基类,画垂直两根线以及水平分割线
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.__draw_back()
@@ -110,9 +112,40 @@ class KlineArea(PaintArea):
     def __init__(self):
         # 读行情,测试用
         super().__init__()
-        hqdata = HqData('./dataKLine.txt')
-        hqdata.load_hq()
+        self.hqdata = HqData('./dataKLine.txt')
+        self.hqdata.load_hq()
+        self.__set_default()
 
+    def __set_default(self):
+        """
+        设置:
+        总显示数量    self.total
+        日期间隔      self.day_section
+        最高价,最低价 self.price
+        """
+
+        # 总显示数量
+        self.total = 200
+
+        # 日期间隔
+        DaySection = namedtuple('DaySection', 'begin end')
+
+        self.day_section = DaySection(begin=len(self.hqdata.klines) - self.total,
+                                      end=len(self.hqdata.klines))
+
+        # 最高价,最低价
+        Price = namedtuple('Price', 'highest_bid lowest_bid')
+
+        highest_bid = self.hqdata.klines[0].highest_bid
+        lowest_bid = self.hqdata.klines[0].lowest_bid
+
+        for i in range(self.day_section.begin, self.day_section.end):
+            if self.hqdata.klines[i].highest_bid > highest_bid:
+                highest_bid = self.hqdata.klines[i].highest_bid
+            if self.hqdata.klines[i].lowest_bid < lowest_bid:
+                lowest_bid = self.hqdata.klines[i].lowest_bid
+
+        self.price = Price(highest_bid, lowest_bid)
 
     def paintEvent(self, QPaintEvent):
         super().paintEvent(QPaintEvent)

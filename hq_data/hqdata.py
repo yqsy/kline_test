@@ -47,3 +47,5 @@ class HqData():
                 kline.total_amount = eles[8]
                 kline.turnover_rate = eles[9]
                 kline.volume_amount = float(eles[10].replace('-','0'))
+
+                self.klines.append(kline)
