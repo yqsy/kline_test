@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QLine
 
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QGridLayout, QPushButton, \
     QSplitter
@@ -14,7 +14,6 @@ class PaintArea(QWidget):
 
     def paintEvent(self, QPaintEvent):
         self.draw_block()
-        self.draw_horizontal_line()
 
     def draw_back(self):
         """初始化背景为黑色"""
@@ -22,13 +21,6 @@ class PaintArea(QWidget):
         palette = QPalette()
         palette.setColor(QPalette.Window, QColor('#000000'))
         self.setPalette(palette)
-
-    def draw_horizontal_line(self):
-        """画背景横线"""
-        painter = QPainter(self)
-        pen = QPen()
-        pen.setColor(QColor('#FF0000'))
-        painter.setPen(pen)
 
     def draw_block(self):
         """画背景方框"""
@@ -42,21 +34,15 @@ class PaintArea(QWidget):
         pen.setColor(QColor('#FF0000'))
         painter.setPen(pen)
 
-        # 4个角的坐标 左上 左下 右上 右下
-        points = [
-            QPoint(margin_left, self.height() - margin_top),
-            QPoint(margin_left, margin_bottom),
-            QPoint(self.width() - margin_right, self.height() - margin_top),
-            QPoint(self.width() - margin_right, margin_bottom)
-        ]
+        # 左右两根竖线
+        left_line = QLine(QPoint(margin_left, self.height() - margin_top),
+                          QPoint(margin_left, margin_bottom))
 
-        upper_left, lower_left, upper_right, lower_right = range(4)
+        right_line = QLine(QPoint(self.width() - margin_right, self.height() - margin_top),
+                           QPoint(self.width() - margin_right, margin_bottom))
 
-        painter.drawLine(points[upper_left], points[lower_left])
-        painter.drawLine(points[upper_left], points[upper_right])
-
-        painter.drawLine(points[lower_right], points[lower_left])
-        painter.drawLine(points[lower_right], points[upper_right])
+        painter.drawLine(left_line)
+        painter.drawLine(right_line)
 
 
 class Window(QMainWindow):
