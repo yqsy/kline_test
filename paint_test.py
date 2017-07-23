@@ -119,18 +119,7 @@ class Window(QMainWindow):
         self.setCentralWidget(splitter)
 
 
-def handle_exception(etype, value, tb, limit=None, file=None, chain=True):
-    msg_box = QMessageBox(QMessageBox.NoIcon, 'error', ''.
-                          join(traceback.format_exception(etype, value, tb)), QMessageBox.Ok)
-    msg_box.setTextInteractionFlags(Qt.TextSelectableByMouse)
-    msg_box.exec_()
-
-    QApplication.quit()
-
-
 if __name__ == '__main__':
-    # sys.excepthook = handle_exception
-
     app = QApplication(sys.argv)
     window = Window()
     window.show()
