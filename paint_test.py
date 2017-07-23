@@ -10,8 +10,14 @@ from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QGridLayout, QPu
     QSplitter, QMessageBox
 from PyQt5.QtGui import QPainter, QPalette, QColor, QPen
 
+from hq_data import Kline
+from hq_data import HqData
+from exception import hook_exception_handle
 
 class PaintArea(QWidget):
+    """
+    背景基类,画垂直两根线以及水平分割线
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.__draw_back()
@@ -101,6 +107,13 @@ class PaintArea(QWidget):
 
 
 class KlineArea(PaintArea):
+    def __init__(self):
+        # 读行情,测试用
+        super().__init__()
+        hqdata = HqData('./dataKLine.txt')
+        hqdata.load_hq()
+
+
     def paintEvent(self, QPaintEvent):
         super().paintEvent(QPaintEvent)
 
@@ -120,6 +133,8 @@ class Window(QMainWindow):
 
 
 if __name__ == '__main__':
+    hook_exception_handle()
+
     app = QApplication(sys.argv)
     window = Window()
     window.show()
