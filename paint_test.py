@@ -15,9 +15,6 @@ class PaintArea(QWidget):
     def paintEvent(self, QPaintEvent):
         self.__draw_block()
 
-    def resizeEvent(self, QResizeEvent):
-        pass
-
     def __draw_back(self):
         """初始化背景为黑色"""
         self.setAutoFillBackground(True)
