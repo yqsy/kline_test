@@ -1,10 +1,10 @@
 import sys
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QGridLayout, QPushButton, \
     QSplitter
-from PyQt5.QtGui import QPainter, QPalette, QColor
+from PyQt5.QtGui import QPainter, QPalette, QColor, QPen
 
 
 class PaintArea(QWidget):
@@ -13,13 +13,38 @@ class PaintArea(QWidget):
         self.draw_back()
 
     def paintEvent(self, QPaintEvent):
-        pass
+        self.draw_block()
 
     def draw_back(self):
+        """初始化背景为黑色"""
         self.setAutoFillBackground(True)
         palette = QPalette()
         palette.setColor(QPalette.Window, QColor('#000000'))
         self.setPalette(palette)
+
+    def draw_horizontal_line(self):
+        """画背景横线"""
+        painter = QPainter()
+        pen = QPen()
+        pen.setColor(QColor('#FF0000'))
+        painter.setPen(pen)
+
+    def draw_block(self):
+        """画背景方框"""
+        # self.width()
+        # self.height()
+
+        margin_left = 80
+        margin_right = 80
+        margin_top = 20
+        margin_bottom = 20
+
+        painter = QPainter()
+        pen = QPen()
+        pen.setColor(QColor='#FF0000')
+        painter.setPen(pen)
+        painter.drawLine(margin_left, self.height() - margin_top,
+                         margin_left, margin_bottom)
 
 
 class Window(QMainWindow):
@@ -28,9 +53,9 @@ class Window(QMainWindow):
         self.setWindowTitle('paint test')
         self.resize(1000, 600)
         splitter = QSplitter(Qt.Vertical)
-        paint_area = PaintArea(self)
-        paint_area2 = PaintArea(self)
-        splitter.addWidget(paint_area)
+        paint_area1 = PaintArea()
+        paint_area2 = PaintArea()
+        splitter.addWidget(paint_area1)
         splitter.addWidget(paint_area2)
         splitter.setHandleWidth(1)
         self.setCentralWidget(splitter)
