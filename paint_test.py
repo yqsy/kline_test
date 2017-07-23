@@ -48,7 +48,7 @@ class PaintArea(QWidget):
         painter.drawLine(right_line)
 
         # 水平线
-        grid_height = 60
+        cell_grid_height = 60
 
         xleft = margin_left
         xright = self.width() - margin_right
@@ -56,15 +56,19 @@ class PaintArea(QWidget):
         ybegin = margin_bottom
         yend = self.height() - margin_top
 
-        all_horizontal_lines = range(ybegin,yend,grid_height)
+        grid_height = yend - ybegin
+        cells = grid_height // cell_grid_height
+        each_grid_height = grid_height / cells
 
-        for idx,ypoint in enumerate(all_horizontal_lines):
-            if idx == 0 or idx == len(all_horizontal_lines) -1 :
+        ypoints = [margin_bottom + i * each_grid_height for i in range(cells + 1)]
+
+        for idx, ypoint in enumerate(ypoints):
+            if idx == 0 or idx == len(ypoints) - 1:
                 pen.setStyle(Qt.SolidLine)
             else:
                 pen.setStyle(Qt.DashDotLine)
             painter.setPen(pen)
-            horizontal_line = QLine(QPoint(xleft,ypoint),QPoint(xright, ypoint))
+            horizontal_line = QLine(QPoint(xleft, ypoint), QPoint(xright, ypoint))
             painter.drawLine(horizontal_line)
 
 
