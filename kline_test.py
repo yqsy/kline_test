@@ -54,7 +54,10 @@ class MainWindow(QMainWindow):
     def get_style_combo_box(self):
         combo_box = QComboBox()
         combo_box.addItems(QStyleFactory.keys())
-        combo_box.activated[str].connect(self.change_style);
+        combo_box.activated[str].connect(self.change_style)
+        all_items = [combo_box.itemText(i) for i in range(combo_box.count())]
+        idx = all_items.index('Fusion')
+        combo_box.setCurrentIndex(idx)
         return combo_box
 
     def change_style(self, style_name):
