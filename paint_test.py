@@ -14,6 +14,7 @@ class PaintArea(QWidget):
 
     def paintEvent(self, QPaintEvent):
         self.draw_block()
+        self.draw_horizontal_line()
 
     def draw_back(self):
         """初始化背景为黑色"""
@@ -31,7 +32,6 @@ class PaintArea(QWidget):
 
     def draw_block(self):
         """画背景方框"""
-
         margin_left = 80
         margin_right = 80
         margin_top = 20
