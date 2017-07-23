@@ -71,7 +71,11 @@ class PaintArea(QWidget):
         # 分割成grid的个数
         self.min_grids = self.grid.height // self.min_grid_height
         # 每个grid的高度
-        self.each_grid_height = self.grid.height / self.min_grids
+        try:
+            self.each_grid_height = self.grid.height / self.min_grids
+        except ZeroDivisionError:
+            self.each_grid_height = 0
+
         # 横线y轴坐标集合
         self.y_coordinates = [self.margin.bottom + i * self.each_grid_height
                               for i in range(self.min_grids + 1)]
@@ -136,8 +140,8 @@ class KlineArea(PaintArea):
         # 最高价,最低价
         Price = namedtuple('Price', 'highest_bid lowest_bid')
 
-        highest_bid = self.hqdata.klines[0].highest_bid
-        lowest_bid = self.hqdata.klines[0].lowest_bid
+        highest_bid = self.hqdata.klines[self.day_section.begin].highest_bid
+        lowest_bid = self.hqdata.klines[self.day_section.end - 1].lowest_bid
 
         for i in range(self.day_section.begin, self.day_section.end):
             if self.hqdata.klines[i].highest_bid > highest_bid:
@@ -159,8 +163,11 @@ class KlineArea(PaintArea):
         pen.setColor(QColor('#ff0000'))
         painter.setPen(pen)
 
-        ystep = (self.price.highest_bid - self.price.lowest_bid) \
-                / self.min_grids
+        try:
+            ystep = (self.price.highest_bid - self.price.lowest_bid) \
+                    / self.min_grids
+        except ZeroDivisionError:
+            ystep = 0
 
         def price_generator(lowest_bid, step):
             while True:
@@ -169,7 +176,7 @@ class KlineArea(PaintArea):
 
         ystep_generator = price_generator(self.price.lowest_bid, ystep)
 
-        for y_corrdinate in self.y_coordinates:
+        for y_corrdinate in self.y_coordinates[::-1]:
             painter.drawText(self.rectangle.x2 + 10, y_corrdinate, next(ystep_generator))
 
 
