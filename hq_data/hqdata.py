@@ -1,3 +1,4 @@
+from copy import copy
 class Kline():
     def __init__(self):
         self.time = ''  # 时间
@@ -48,4 +49,4 @@ class HqData():
                 kline.turnover_rate = eles[9]
                 kline.volume_amount = float(eles[10].replace('-','0'))
 
-                self.klines.append(kline)
+                self.klines.append(copy(kline))

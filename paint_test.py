@@ -130,7 +130,7 @@ class KlineArea(PaintArea):
         # 日期间隔
         DaySection = namedtuple('DaySection', 'begin end')
 
-        self.day_section = DaySection(begin=len(self.hqdata.klines) - self.total,
+        self.day_section = DaySection(begin=len(self.hqdata.klines) - 1 - self.total,
                                       end=len(self.hqdata.klines))
 
         # 最高价,最低价
@@ -149,6 +149,28 @@ class KlineArea(PaintArea):
 
     def paintEvent(self, QPaintEvent):
         super().paintEvent(QPaintEvent)
+
+        self.__draw_y_tick()
+
+    def __draw_y_tick(self):
+        """画价格"""
+        painter = QPainter(self)
+        pen = QPen()
+        pen.setColor(QColor('#ff0000'))
+        painter.setPen(pen)
+
+        ystep = (self.price.highest_bid - self.price.lowest_bid) \
+                / self.min_grids
+
+        def price_generator(lowest_bid, step):
+            while True:
+                yield '{0:.2f}'.format(lowest_bid)
+                lowest_bid = lowest_bid + step
+
+        ystep_generator = price_generator(self.price.lowest_bid, ystep)
+
+        for y_corrdinate in self.y_coordinates:
+            painter.drawText(self.rectangle.x2 + 10, y_corrdinate, next(ystep_generator))
 
 
 class Window(QMainWindow):
