@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QSplitter, \
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('kline_test')
+        self.setWindowTitle('simple form')
         self.resize(300, 300)
 
         widget = QWidget()
