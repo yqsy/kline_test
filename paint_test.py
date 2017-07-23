@@ -60,7 +60,6 @@ class PaintArea(QWidget):
             painter.setPen(pen)
             painter.drawLine(xleft, ypoint, xright, ypoint)
 
-        ypoints[100] = -1
 
 
 class KlineArea(PaintArea):
@@ -91,7 +90,7 @@ def handle_exception(etype, value, tb, limit=None, file=None, chain=True):
 
 
 if __name__ == '__main__':
-    sys.excepthook = handle_exception
+    # sys.excepthook = handle_exception
 
     app = QApplication(sys.argv)
     window = Window()
