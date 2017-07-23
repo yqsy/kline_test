@@ -1,4 +1,3 @@
-from copy import copy
 class Kline():
     def __init__(self):
         self.time = ''  # 时间
@@ -30,8 +29,9 @@ class HqData():
 
     def load_hq(self):
         with open(self.file, 'r', encoding='gb2312') as f:
-            kline = Kline()
+
             for line in f:
+                kline = Kline()
                 eles = line.split('\t')
 
                 if len(eles) < 11:
@@ -47,6 +47,6 @@ class HqData():
                 kline.total_volume = eles[7]
                 kline.total_amount = eles[8]
                 kline.turnover_rate = eles[9]
-                kline.volume_amount = float(eles[10].replace('-','0'))
+                kline.volume_amount = float(eles[10].replace('-', '0'))
 
-                self.klines.append(copy(kline))
+                self.klines.append(kline)
