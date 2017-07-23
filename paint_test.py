@@ -1,9 +1,11 @@
 import sys
+import signal
+import traceback
 
-from PyQt5.QtCore import Qt, QPoint, QLine
+from PyQt5.QtCore import Qt, QPoint, QLine, QTimer
 
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QGridLayout, QPushButton, \
-    QSplitter
+    QSplitter, QMessageBox
 from PyQt5.QtGui import QPainter, QPalette, QColor, QPen
 
 
@@ -58,6 +60,12 @@ class PaintArea(QWidget):
             painter.setPen(pen)
             painter.drawLine(xleft, ypoint, xright, ypoint)
 
+        ypoints[100] = -1
+
+
+class KlineArea(PaintArea):
+    pass
+
 
 class Window(QMainWindow):
     def __init__(self):
@@ -65,7 +73,7 @@ class Window(QMainWindow):
         self.setWindowTitle('paint test')
         self.resize(1000, 600)
         splitter = QSplitter(Qt.Vertical)
-        paint_area1 = PaintArea()
+        paint_area1 = KlineArea()
         paint_area2 = PaintArea()
         splitter.addWidget(paint_area1)
         splitter.addWidget(paint_area2)
@@ -73,7 +81,18 @@ class Window(QMainWindow):
         self.setCentralWidget(splitter)
 
 
+def handle_exception(etype, value, tb, limit=None, file=None, chain=True):
+    msg_box = QMessageBox(QMessageBox.NoIcon, 'error', ''.
+                          join(traceback.format_exception(etype, value, tb)), QMessageBox.Ok)
+    msg_box.setTextInteractionFlags(Qt.TextSelectableByMouse)
+    msg_box.exec_()
+
+    QApplication.quit()
+
+
 if __name__ == '__main__':
+    sys.excepthook = handle_exception
+
     app = QApplication(sys.argv)
     window = Window()
     window.show()
