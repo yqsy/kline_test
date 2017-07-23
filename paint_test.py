@@ -2,6 +2,8 @@ import sys
 import signal
 import traceback
 
+from collections import namedtuple
+
 from PyQt5.QtCore import Qt, QPoint, QLine, QTimer
 
 from PyQt5.QtWidgets import QWidget, QMainWindow, QApplication, QGridLayout, QPushButton, \
@@ -13,9 +15,58 @@ class PaintArea(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.__draw_back()
+        self.__set_default()
+        self.__calc_grid()
 
     def paintEvent(self, QPaintEvent):
         self.__draw_block()
+
+    def resizeEvent(self, QResizeEvent):
+        self.__calc_grid()
+
+    def __set_default(self):
+        """
+        设置:
+        边距               self.margin
+        单个grid的最小高度  self.min_grid_height
+        """
+
+        # 边距
+        Margin = namedtuple('Margin', 'left right top bottom')
+        self.margin = Margin(left=80, right=80, top=20, bottom=20)
+
+        # 单个grid的最小高度
+        self.min_grid_height = 60
+
+    def __calc_grid(self):
+        """
+        计算:
+        画板的长度和宽度    self.grid
+        4点确定矩形         self.rectangle
+        分割成grid的个数    self.min_grids
+        每个grid的高度      self.each_grid_height
+        横线y轴坐标集合     self.y_coordinates
+        """
+
+        # 画板的长度和宽度
+        Grid = namedtuple('Grid', 'height width')
+        self.grid = Grid(self.height() - self.margin.top - self.margin.bottom,
+                         self.width() - self.margin.left - self.margin.right)
+
+        # 4点确定矩形
+        Rectangle = namedtuple('Rectangle', 'x1 x2 y1 y2')
+        self.rectangle = Rectangle(x1=self.margin.left,
+                                   x2=self.width() - self.margin.right,
+                                   y1=self.margin.bottom,
+                                   y2=self.height() - self.margin.top)
+
+        # 分割成grid的个数
+        self.min_grids = self.grid.height // self.min_grid_height
+        # 每个grid的高度
+        self.each_grid_height = self.grid.height / self.min_grids
+        # 横线y轴坐标集合
+        self.y_coordinates = [self.margin.bottom + i * self.each_grid_height
+                              for i in range(self.min_grids + 1)]
 
     def __draw_back(self):
         """初始化背景为黑色"""
@@ -25,40 +76,28 @@ class PaintArea(QWidget):
         self.setPalette(palette)
 
     def __draw_block(self):
-        """画背景方框"""
-        margin_left, margin_right, margin_top, margin_bottom = 80, 80, 20, 20
-
+        """画左右两根垂直线,横线列表"""
         painter = QPainter(self)
         pen = QPen()
         pen.setColor(QColor('#FF0000'))
         painter.setPen(pen)
 
         # 左右两根垂直线
-        painter.drawLine(margin_left, self.height() - margin_top,
-                         margin_left, margin_bottom)
-        painter.drawLine(self.width() - margin_right, self.height() - margin_top,
-                         self.width() - margin_right, margin_bottom)
+        painter.drawLine(self.rectangle.x1, self.rectangle.y1,
+                         self.rectangle.x1, self.rectangle.y2)
 
-        # 水平线
-        cell_grid_height = 60
-        xleft = margin_left
-        xright = self.width() - margin_right
+        painter.drawLine(self.rectangle.x2, self.rectangle.y1,
+                         self.rectangle.x2, self.rectangle.y2)
 
-        ybegin = margin_bottom
-        yend = self.height() - margin_top
-
-        grid_height = yend - ybegin
-        cells = grid_height // cell_grid_height
-        each_grid_height = grid_height / cells
-
-        ypoints = [margin_bottom + i * each_grid_height for i in range(cells + 1)]
-        for idx, ypoint in enumerate(ypoints):
-            if idx == 0 or idx == len(ypoints) - 1:
+        # 横线
+        for idx, y_corrdinate in enumerate(self.y_coordinates):
+            if idx == 0 or idx == len(self.y_coordinates) - 1:
                 pen.setStyle(Qt.SolidLine)
             else:
                 pen.setStyle(Qt.DashDotLine)
             painter.setPen(pen)
-            painter.drawLine(xleft, ypoint, xright, ypoint)
+            painter.drawLine(self.rectangle.x1, y_corrdinate,
+                             self.rectangle.x2, y_corrdinate)
 
 
 class KlineArea(PaintArea):
