@@ -15,6 +15,9 @@ class PaintArea(QWidget):
     def paintEvent(self, QPaintEvent):
         self.__draw_block()
 
+    def resizeEvent(self, QResizeEvent):
+        pass
+
     def __draw_back(self):
         """初始化背景为黑色"""
         self.setAutoFillBackground(True)
@@ -45,9 +48,24 @@ class PaintArea(QWidget):
         painter.drawLine(right_line)
 
         # 水平线
-        xleft = margin_left
-        xright =  self.width() - margin_right
+        grid_height = 60
 
+        xleft = margin_left
+        xright = self.width() - margin_right
+
+        ybegin = margin_bottom
+        yend = self.height() - margin_top
+
+        all_horizontal_lines = range(ybegin,yend,grid_height)
+
+        for idx,ypoint in enumerate(all_horizontal_lines):
+            if idx == 0 or idx == len(all_horizontal_lines) -1 :
+                pen.setStyle(Qt.SolidLine)
+            else:
+                pen.setStyle(Qt.DashDotLine)
+            painter.setPen(pen)
+            horizontal_line = QLine(QPoint(xleft,ypoint),QPoint(xright, ypoint))
+            painter.drawLine(horizontal_line)
 
 
 class Window(QMainWindow):
