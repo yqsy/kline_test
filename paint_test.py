@@ -61,9 +61,9 @@ class PaintArea(QWidget):
             painter.drawLine(xleft, ypoint, xright, ypoint)
 
 
-
 class KlineArea(PaintArea):
-    pass
+    def paintEvent(self, QPaintEvent):
+        super().paintEvent(QPaintEvent)
 
 
 class Window(QMainWindow):
