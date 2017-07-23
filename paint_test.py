@@ -27,10 +27,7 @@ class PaintArea(QWidget):
 
     def __draw_block(self):
         """画背景方框"""
-        margin_left = 80
-        margin_right = 80
-        margin_top = 20
-        margin_bottom = 20
+        margin_left, margin_right, margin_top, margin_bottom = 80, 80, 20, 20
 
         painter = QPainter(self)
         pen = QPen()
@@ -38,18 +35,13 @@ class PaintArea(QWidget):
         painter.setPen(pen)
 
         # 左右两根垂直线
-        left_line = QLine(QPoint(margin_left, self.height() - margin_top),
-                          QPoint(margin_left, margin_bottom))
-
-        right_line = QLine(QPoint(self.width() - margin_right, self.height() - margin_top),
-                           QPoint(self.width() - margin_right, margin_bottom))
-
-        painter.drawLine(left_line)
-        painter.drawLine(right_line)
+        painter.drawLine(margin_left, self.height() - margin_top,
+                         margin_left, margin_bottom)
+        painter.drawLine(self.width() - margin_right, self.height() - margin_top,
+                         self.width() - margin_right, margin_bottom)
 
         # 水平线
         cell_grid_height = 60
-
         xleft = margin_left
         xright = self.width() - margin_right
 
@@ -61,15 +53,13 @@ class PaintArea(QWidget):
         each_grid_height = grid_height / cells
 
         ypoints = [margin_bottom + i * each_grid_height for i in range(cells + 1)]
-
         for idx, ypoint in enumerate(ypoints):
             if idx == 0 or idx == len(ypoints) - 1:
                 pen.setStyle(Qt.SolidLine)
             else:
                 pen.setStyle(Qt.DashDotLine)
             painter.setPen(pen)
-            horizontal_line = QLine(QPoint(xleft, ypoint), QPoint(xright, ypoint))
-            painter.drawLine(horizontal_line)
+            painter.drawLine(xleft, ypoint, xright, ypoint)
 
 
 class Window(QMainWindow):
