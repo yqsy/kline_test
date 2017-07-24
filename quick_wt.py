@@ -34,10 +34,10 @@ class MainWindow(QMainWindow):
         grid_layout.addWidget(self.get_gox_chedanweituo(), 0, 1)
         grid_layout.addWidget(self.get_box_chengjiaoxinxi(), 1, 1)
 
-        grid_layout.setColumnStretch(0,1)
-        grid_layout.setColumnStretch(1,3)
+        grid_layout.setColumnStretch(0, 1)
+        grid_layout.setColumnStretch(1, 3)
 
-        #setRowStretch
+        # setRowStretch
         self.setCentralWidget(widget)
 
     def get_box_buy(self):
@@ -55,13 +55,26 @@ class MainWindow(QMainWindow):
     def get_box_sell(self):
         """左下角的卖出方框"""
         box = QGroupBox('卖出')
+
+        grid_layout = QGridLayout()
+
+        widget = QWidget()
         form_layout = QFormLayout()
         form_layout.addRow('证券代码:', MyLineEdit('000001'))
         form_layout.addRow('证券名称:', MyLineEdit('平安银行'))
         form_layout.addRow('委托价格:', MyLineEdit(''))
         form_layout.addRow('委托数量:', MyLineEdit(''))
         form_layout.addRow('可买数量:', MyLineEdit(''))
-        box.setLayout(form_layout)
+        widget.setLayout(form_layout)
+
+        grid_layout.setColumnStretch(0, 1)
+        grid_layout.setColumnStretch(2, 1)
+
+        grid_layout.setRowStretch(0, 1)
+        grid_layout.setRowStretch(2, 1)
+
+        grid_layout.addWidget(widget, 1, 1)
+        box.setLayout(grid_layout)
         return box
 
     def get_gox_chedanweituo(self):
